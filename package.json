@@ -1,0 +1,40 @@
+{
+  "name": "submission-svc",
+  "version": "1.0.0",
+  "description": "Welcome to the GitHub repository for **Submission SVC** - This service is responsible for handling the submissions in a coding platform environment. It manages the lifecycle of a submission - receiving user-submitted code, sending it for evaluation, storing results, and tracking submission history.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.js",
+    "start-appmap": "npx appmap-node nodemon src/index.js",
+    "start": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
+    "format": "prettier --write \"src/**/*.js\"",
+    "format:check": "prettier --check \"src/**/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ayushya100/submission-svc.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "javascript",
+    "submission-svc"
+  ],
+  "author": "Ayushya Jaiswal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ayushya100/submission-svc/issues"
+  },
+  "homepage": "https://github.com/Ayushya100/submission-svc#readme",
+  "devDependencies": {
+    "appmap-node": "^2.24.3",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0"
+  }
+}

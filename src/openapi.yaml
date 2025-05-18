@@ -1,0 +1,267 @@
+openapi: 3.0.0
+info:
+  title: Submission Service
+  version: 1.0.0
+  description: The Submission Service is response for managing the user submissions for dsa and api sheets.
+    Code Submission Management - Handles the incoming code submissions from users, sending it to Judge0 engine for evaluation, and storing the result.
+    Real-time Submission Status - Returns real-time submission status and results.
+    Submission History Management - Maintains submission history per user/problem.
+
+servers:
+  - url: /submission-svc/api/v1.0
+    description: Local development server
+
+components:
+  schemas:
+    healthCheckData:
+      title: Schema for Health Check Data
+      type: object
+      properties:
+        uptime:
+          type: string
+        timestamp:
+          type: string
+        hostname:
+          type: string
+
+    healthCheckSuccessResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        type:
+          type: string
+          example: 'SUCCESS'
+        message:
+          type: string
+          example: 'Success'
+        devMessage:
+          type: string
+          example: 'Success'
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/healthCheckData'
+
+    noContentResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 204
+        type:
+          type: string
+          example: 'CONTENT_NOT_AVAILABLE'
+        message:
+          type: string
+          example: 'No content available'
+        devMessage:
+          type: string
+          example: 'No content available'
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+
+    unauthorizedResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 401
+        type:
+          type: string
+          example: 'UNAUTHORIZED'
+        message:
+          type: string
+          example: 'Unauthorized'
+        devMessage:
+          type: string
+          example: Unauthorized access. Could not proceed with the request.
+        error:
+          type: array
+        data:
+          type: array
+
+    badRequestResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 400
+        type:
+          type: string
+          example: 'BAD_REQUEST'
+        message:
+          type: string
+          example: 'Bad Request'
+        devMessage:
+          type: string
+          example: Bad Request. Required resource does not exist.
+        error:
+          type: array
+        data:
+          type: array
+
+    forbiddenResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 403
+        type:
+          type: string
+          example: 'FORBIDDEN'
+        message:
+          type: string
+          example: 'Forbidden'
+        devMessage:
+          type: string
+          example: Forbidden access. Could not proceed with the request.
+        error:
+          type: array
+        data:
+          type: array
+
+    notFound:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 404
+        type:
+          type: string
+          example: 'NOT_FOUND'
+        message:
+          type: string
+          example: 'Resource Not Found'
+        devMessage:
+          type: string
+          example: Not Found. Requested resource does not exist.
+        error:
+          type: array
+        data:
+          type: array
+
+    requestTimeout:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 408
+        type:
+          type: string
+          example: 'REQUEST_TIMEOUT'
+        message:
+          type: string
+          example: 'Request timeout.'
+        devMessage:
+          type: string
+          example: 'Request timeout.'
+        error:
+          type: array
+        data:
+          type: array
+
+    userAlreadyExist:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 409
+        type:
+          type: string
+          example: 'CONFLICT'
+        message:
+          type: string
+          example: 'Resource already exist'
+        devMessage:
+          type: string
+          example: 'Resource already exist'
+        error:
+          type: array
+        data:
+          type: array
+
+    unsupportedMedia:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 415
+        type:
+          type: string
+          example: 'UNSUPPORTED_MEDIA'
+        message:
+          type: string
+          example: 'The media format of the requested data is not supported by the server.'
+        devMessage:
+          type: string
+          example: 'The media format of the requested data is not supported by the server.'
+        error:
+          type: array
+        data:
+          type: array
+
+    unprocessableContent:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 422
+        type:
+          type: string
+          example: 'UNPROCESSABLE_CONTENT'
+        message:
+          type: string
+          example: 'The request was unabled to be followed due to semantic/internal errors.'
+        devMessage:
+          type: string
+          example: 'The request was unabled to be followed due to semantic/internal errors.'
+        error:
+          type: array
+        data:
+          type: array
+
+    internalServerErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 500
+        type:
+          type: string
+          example: 'Internal Server Error'
+        message:
+          type: string
+          example: 'Internal Server Error'
+        devMessage:
+          type: string
+          example: 'Internal Server Error'
+        error:
+          type: array
+        data:
+          type: array
+
+paths:
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Service Health Check
+      description: An API to check the health status of the service.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/healthCheckSuccessResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internalServerErrorResponse'
