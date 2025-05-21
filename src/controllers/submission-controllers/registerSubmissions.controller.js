@@ -321,6 +321,7 @@ const processUserSubmission = async(protocol, userId, sheetDtl, payload, type) =
         };
 
         let responseData = {};
+        let responseMessage = '';
         if (executionType === 'PRIVATE') {
             log.info('Call db query to check the sheet status for user');
             const sheetStatusDtl = await getUserSubmissionStatus(userId, sheetId);
@@ -334,6 +335,7 @@ const processUserSubmission = async(protocol, userId, sheetDtl, payload, type) =
             log.info('Call controller function to fetch the newly registered submission details from system');
             const submissionDtl = await getSubmissionDtlById(sheetId, submissionId);
             responseData = submissionDtl.data;
+            responseMessage = responseData.runtimeMsg;
         } else {
             const testCaseResponse = executorResponse.data.testCaseResponse.map((testCase) => {
                 return {
@@ -347,9 +349,8 @@ const processUserSubmission = async(protocol, userId, sheetDtl, payload, type) =
                 };
             });
 
-            responseData.status = executorResponse.status;
-            responseData.message = executorResponse.message;
-            responseData.data = {
+            responseMessage = executorResponse.message;
+            responseData = {
                 languageId: convertIdToPrettyString(executorResponse.data.submissionResult.langId),
                 code: executorResponse.data.submissionResult.code,
                 testCaseResponse: testCaseResponse,
@@ -363,7 +364,7 @@ const processUserSubmission = async(protocol, userId, sheetDtl, payload, type) =
         log.success('Submission operation completed successfully');
         return {
             status: 200,
-            message: 'User submission successfull',
+            message: responseMessage,
             data: responseData
         };
     } catch (err) {

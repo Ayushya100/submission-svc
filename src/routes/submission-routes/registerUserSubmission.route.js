@@ -24,7 +24,6 @@ const registerUserSubmissions = async(req, res, next) => {
 
         log.info('Call controller function to process user submission');
         const submissionResult = await submissionControllers.processUserSubmission(protocol, userId, sheetDtl.data, payload, type);
-        console.log(submissionResult);
 
         res.status(200).json(buildApiResponse(submissionResult));
     } catch (err) {

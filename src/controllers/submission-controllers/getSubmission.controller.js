@@ -23,12 +23,13 @@ const getSubmissionDtlById = async(sheetId, submissionId, deletedRecord = false)
         }
         submissionDtl = submissionDtl.rows[0];
 
+        let responseMessage = submissionDtl.status === 'SUCCESS' ? 'Successfull' : submissionDtl.runtime_msg;
         const responseData = {
             id: convertIdToPrettyString(submissionDtl.id),
             languageId: convertIdToPrettyString(submissionDtl.language_id),
             status: submissionDtl.status,
-            runtimeMsg: submissionDtl.runtime_msg,
-            errorMsg: submissionDtl.error_msg !== null ? JSON.parse(submissionDtl.error_msg) : submissionDtl.error_msg,
+            runtimeMsg: responseMessage,
+            errorMsg: submissionDtl.error_msg !== null ? JSON.parse(submissionDtl.error_msg) : {},
             code: submissionDtl.code,
             maxMemoConsumption: formatMemory(submissionDtl.max_memory),
             maxTimeConsumption: formatTime(submissionDtl.max_time),
@@ -36,7 +37,7 @@ const getSubmissionDtlById = async(sheetId, submissionId, deletedRecord = false)
             avgTimeConsumption: formatTime(submissionDtl.avg_time),
             startTime: submissionDtl.startTime !== null ? convertToNativeTimeZone(submissionDtl.startTime) : submissionDtl.startTime,
             endTime: submissionDtl.endTime !== null ? convertToNativeTimeZone(submissionDtl.endTime) : submissionDtl.endTime,
-            submittedAt: submissionDtl.submitted_at
+            submittedAt: convertToNativeTimeZone(submissionDtl.submitted_at)
         };
         
         log.success('Requested submission details fetched successfully');
