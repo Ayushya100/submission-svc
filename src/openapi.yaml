@@ -13,6 +13,43 @@ servers:
 
 components:
   schemas:
+    testCasesData:
+      title: Schema for Sheet Test Cases
+      type: object
+      properties:
+        input:
+          type: string
+          minLength: 1
+        output:
+          type: string
+      required:
+        - input
+        - output
+
+    registerSubmissionPayload:
+      type: object
+      properties:
+        sheetId:
+          type: string
+          description: Sheet ID
+          minLength: 30
+        languageId:
+          type: string
+          description: Language ID
+          minLength: 30
+        code:
+          type: string
+          description: Problem code
+        testCases:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/testCasesData'
+      required:
+        - sheetId
+        - languageId
+        - code
+
     healthCheckData:
       title: Schema for Health Check Data
       type: object
@@ -44,6 +81,42 @@ components:
           example: true
         data:
           $ref: '#/components/schemas/healthCheckData'
+      required:
+        - statusCode
+        - type
+        - message
+        - devMessage
+        - success
+        - data
+
+    registerSheetTypeResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 201
+        type:
+          type: string
+          example: 'REQUEST_COMPLETED'
+        message:
+          type: string
+          example: 'Request Completed'
+        devMessage:
+          type: string
+          example: 'Request Completed'
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          # $ref:
+      required:
+        - statusCode
+        - type
+        - message
+        - devMessage
+        - success
+        - data
 
     noContentResponse:
       type: object
@@ -81,8 +154,10 @@ components:
         devMessage:
           type: string
           example: Unauthorized access. Could not proceed with the request.
-        error:
+        errors:
           type: array
+        stack:
+          type: string
         data:
           type: array
 
@@ -101,8 +176,10 @@ components:
         devMessage:
           type: string
           example: Bad Request. Required resource does not exist.
-        error:
+        errors:
           type: array
+        stack:
+          type: string
         data:
           type: array
 
@@ -121,8 +198,10 @@ components:
         devMessage:
           type: string
           example: Forbidden access. Could not proceed with the request.
-        error:
+        errors:
           type: array
+        stack:
+          type: string
         data:
           type: array
 
@@ -141,8 +220,10 @@ components:
         devMessage:
           type: string
           example: Not Found. Requested resource does not exist.
-        error:
+        errors:
           type: array
+        stack:
+          type: string
         data:
           type: array
 
@@ -161,8 +242,10 @@ components:
         devMessage:
           type: string
           example: 'Request timeout.'
-        error:
+        errors:
           type: array
+        stack:
+          type: string
         data:
           type: array
 
@@ -181,8 +264,10 @@ components:
         devMessage:
           type: string
           example: 'Resource already exist'
-        error:
+        errors:
           type: array
+        stack:
+          type: string
         data:
           type: array
 
@@ -201,8 +286,10 @@ components:
         devMessage:
           type: string
           example: 'The media format of the requested data is not supported by the server.'
-        error:
+        errors:
           type: array
+        stack:
+          type: string
         data:
           type: array
 
@@ -221,8 +308,10 @@ components:
         devMessage:
           type: string
           example: 'The request was unabled to be followed due to semantic/internal errors.'
-        error:
+        errors:
           type: array
+        stack:
+          type: string
         data:
           type: array
 
@@ -241,8 +330,10 @@ components:
         devMessage:
           type: string
           example: 'Internal Server Error'
-        error:
+        errors:
           type: array
+        stack:
+          type: string
         data:
           type: array
 
@@ -261,6 +352,89 @@ paths:
                 $ref: '#/components/schemas/healthCheckSuccessResponse'
         '500':
           description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internalServerErrorResponse'
+
+  /submission:
+    post:
+      operationId: registerSubmissionsForUser
+      summary: Register New Submissions for Users.
+      description: AN API to register new submission for user in a system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/registerSubmissionPayload'
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum:
+              - PUBLIC
+              - PRIVATE
+          required: true
+          description: Process by test cases type
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/registerSheetTypeResponse'
+        '400':
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequestResponse'
+        '401':
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorizedResponse'
+        '403':
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbiddenResponse'
+        '404':
+          description: NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/notFound'
+        '408':
+          description: REQUEST_TIMEOUT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/requestTimeout'
+        '409':
+          description: CONFLICT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userAlreadyExist'
+        '415':
+          description: UNSUPPORTED_MEDIA
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unsupportedMedia'
+        '422':
+          description: UNPROCESSABLE_CONTENT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unprocessableContent'
+        '500':
+          description: INTERNAL_SERVER_ERROR
           content:
             application/json:
               schema:

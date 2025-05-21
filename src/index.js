@@ -13,6 +13,11 @@ class SubmissionService extends Service {
   registerPublicEndpoints() {
     this.app.get(`${SUBMISSION_API}/health`, routes.healthCheck);
   }
+
+  registerServiceEndpoints() {
+    // Submission Endpoints
+    this.app.post(`${SUBMISSION_API}/submission`, routes.submissionRoutes.registerUserSubmissions);
+  }
 }
 
 serviceConfig.HOST = process.env.HOST || serviceConfig.HOST;
