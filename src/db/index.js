@@ -9,6 +9,7 @@ import {
   upsertUserSubmissionStatus,
   getSubmissionDtlInfo,
   getSubmissionListBySheetId,
+  getSubmissionCount,
 } from './submission.db.js';
 
 export {
@@ -20,4 +21,5 @@ export {
   upsertUserSubmissionStatus,
   getSubmissionDtlInfo,
   getSubmissionListBySheetId,
+  getSubmissionCount,
 };

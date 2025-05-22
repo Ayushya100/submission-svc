@@ -120,6 +120,37 @@ components:
         status:
           type: string
 
+    
+    submissionListData:
+      title: Schema for submission listing sheet id
+      type: object
+      properties:
+        id:
+          type: string
+        sheetId:
+          type: string
+        languageId:
+          type: string
+        status:
+          type: string
+        runtimeMsg:
+          type: string
+        avgMemoConsumption:
+          type: string
+        avgTimeConsumption:
+          type: string
+        submittedAt:
+          type: string
+      required:
+        - id
+        - sheetId
+        - languageId
+        - status
+        - runtimeMsg
+        - avgMemoConsumption
+        - avgTimeConsumption
+        - submittedAt
+
     getSubmitTypeByIDResponseData:
       title: Schema for retrieving Submission Details
       type: object
@@ -169,31 +200,33 @@ components:
       title: Schema for retrieving all submissions for provided sheet id
       type: object
       properties:
-        id:
-          type: string
-        sheetId:
-          type: string
-        languageId:
-          type: string
-        status:
-          type: string
-        runtimeMsg:
-          type: string
-        avgMemoConsumption:
-          type: string
-        avgTimeConsumption:
-          type: string
-        submittedAt:
-          type: string
+        currentPageItems:
+          type: number
+        limit:
+          type: number
+        page:
+          type: number
+        totalItems:
+          type: number
+        totalPages:
+          type: number
+        nextPage:
+          type: boolean
+        previousPage:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/submissionListData'
       required:
-        - id
-        - sheetId
-        - languageId
-        - status
-        - runtimeMsg
-        - avgMemoConsumption
-        - avgTimeConsumption
-        - submittedAt
+        - currentPageItems
+        - limit
+        - page
+        - totalItems
+        - totalPages
+        - nextPage
+        - previousPage
+        - data
 
     healthCheckData:
       title: Schema for Health Check Data
@@ -282,9 +315,12 @@ components:
           type: boolean
           example: true
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/getAllSubmissionsResponseData'
+          type: object
+          $ref: '#/components/schemas/getAllSubmissionsResponseData'
+        # data:
+        #   type: array
+        #   items:
+        #     $ref: '#/components/schemas/getAllSubmissionsResponseData'
 
     noContentResponse:
       type: object

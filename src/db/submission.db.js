@@ -102,6 +102,14 @@ const getSubmissionListBySheetId = async (userId, sheetId, limit, offset) => {
   return exec(query, params);
 };
 
+const getSubmissionCount = async (userId, sheetId) => {
+  const query = `SELECT COUNT(*) AS TOTAL FROM USER_SUBMISSION_DTL
+    WHERE USER_ID = ? AND PROBLEM_ID = ? AND IS_DELETED = false;`;
+  const params = [userId, sheetId];
+
+  return exec(query, params);
+};
+
 export {
   getSheetInfo,
   getSheetSnippetInfo,
@@ -111,4 +119,5 @@ export {
   upsertUserSubmissionStatus,
   getSubmissionDtlInfo,
   getSubmissionListBySheetId,
+  getSubmissionCount,
 };

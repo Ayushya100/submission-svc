@@ -1,7 +1,7 @@
 'use strict';
 
 import { convertIdToPrettyString, convertPrettyStringToId, convertToNativeTimeZone, logger } from 'common-node-lib';
-import { getSubmissionDtlInfo, getSubmissionListBySheetId } from '../../db/index.js';
+import { getSubmissionDtlInfo, getSubmissionListBySheetId, getSubmissionCount } from '../../db/index.js';
 import { formatMemory, formatTime } from '../../utils/index.js';
 
 const log = logger('Controller: get-submission-detail');
@@ -79,7 +79,24 @@ const getSubmissionList = async (userId, sheetId, page, limit) => {
     }
     submissionList = submissionList.rows;
 
-    submissionList = submissionList.map((submission) => {
+    log.info('Call db query to fetch total number of records for submissions available');
+    const submissionCount = await getSubmissionCount(userId, sheetId);
+    const totalItems = submissionCount.rows[0].total;
+
+    const totalPages = Math.ceil(totalItems / limit);
+    const currentPageItems = Math.min(limit, totalItems - (page - 1) * limit);
+
+    const data = {
+      currentPageItems: currentPageItems,
+      limit: Number(limit),
+      page: Number(page),
+      totalItems: Number(totalItems),
+      totalPages: totalPages,
+      nextPage: page < totalPages,
+      previousPage: page > 1,
+    };
+
+    data.data = submissionList.map((submission) => {
       return {
         id: convertIdToPrettyString(submission.id),
         sheetId: convertIdToPrettyString(submission.problem_id),
@@ -96,7 +113,7 @@ const getSubmissionList = async (userId, sheetId, page, limit) => {
     return {
       status: 200,
       message: 'Submission list found',
-      data: submissionList,
+      data: data,
     };
   } catch (err) {
     if (err.status && err.message) {
