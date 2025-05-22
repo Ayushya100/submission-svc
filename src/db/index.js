@@ -10,6 +10,7 @@ import {
   getSubmissionDtlInfo,
   getSubmissionListBySheetId,
   getSubmissionCount,
+  clearSubmissionsForUser,
 } from './submission.db.js';
 
 export {
@@ -22,4 +23,5 @@ export {
   getSubmissionDtlInfo,
   getSubmissionListBySheetId,
   getSubmissionCount,
+  clearSubmissionsForUser,
 };

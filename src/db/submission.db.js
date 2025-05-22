@@ -110,6 +110,33 @@ const getSubmissionCount = async (userId, sheetId) => {
   return exec(query, params);
 };
 
+const clearSubmissionsForUser = async (userId, sheetId, tagId) => {
+  let dtlQuery = `UPDATE USER_SUBMISSION_DTL SET IS_DELETED = true, MODIFIED_BY = ?
+    WHERE USER_ID = ? AND PROBLEM_ID`;
+  let hdrQuery = `UPDATE USER_SUBMISSION_HDR SET IS_DELETED = true, MODIFIED_BY = ?
+    WHERE USER_ID = ? AND PROBLEM_ID`;
+  const params = [userId, userId];
+
+  if (sheetId && tagId) {
+    const problemQuery = ` IN (
+      SELECT P.ID FROM PROBLEMS P
+      INNER JOIN PROBLEM_TAGS T ON T.PROBLEM_ID = P.ID
+      WHERE P.ID = ? AND T.TAG_ID = ?;
+    )`;
+    dtlQuery += problemQuery;
+    hdrQuery += problemQuery;
+    params.push(sheetId);
+    params.push(tagId);
+  } else if (sheetId) {
+    dtlQuery += ` = ?;`;
+    hdrQuery += ` = ?;`;
+    params.push(sheetId);
+  }
+
+  exec(dtlQuery, params);
+  exec(hdrQuery, params);
+};
+
 export {
   getSheetInfo,
   getSheetSnippetInfo,
@@ -120,4 +147,5 @@ export {
   getSubmissionDtlInfo,
   getSubmissionListBySheetId,
   getSubmissionCount,
+  clearSubmissionsForUser,
 };

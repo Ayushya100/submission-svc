@@ -3,7 +3,7 @@
 import { convertIdToPrettyString, convertPrettyStringToId, logger } from 'common-node-lib';
 import { getSheetInfo } from '../../db/index.js';
 
-const log = logger('Controller: register-submissions');
+const log = logger('Controller: get-sheet-detail');
 
 const getSheetInfoById = async (sheetId, languageId = null) => {
   try {
