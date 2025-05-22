@@ -5,5 +5,5 @@ import submissionRoutes from './submission-routes/index.js';
 
 export default {
   healthCheck,
-  submissionRoutes
+  submissionRoutes,
 };

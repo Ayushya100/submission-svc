@@ -12,6 +12,25 @@ servers:
     description: Local development server
 
 components:
+  parameters:
+    SheetIdParam:
+      name: sheetId
+      description: The ID of sheet to verify
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[A-F0-9]{8}:[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{11}'
+
+    SubmissionIdParam:
+      name: submissionId
+      description: The ID of submission to verify
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[A-F0-9]{8}:[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{11}'
+
   schemas:
     testCasesData:
       title: Schema for Sheet Test Cases
@@ -146,6 +165,36 @@ components:
         - avgMemoConsumption
         - avgTimeConsumption
 
+    getAllSubmissionsResponseData:
+      title: Schema for retrieving all submissions for provided sheet id
+      type: object
+      properties:
+        id:
+          type: string
+        sheetId:
+          type: string
+        languageId:
+          type: string
+        status:
+          type: string
+        runtimeMsg:
+          type: string
+        avgMemoConsumption:
+          type: string
+        avgTimeConsumption:
+          type: string
+        submittedAt:
+          type: string
+      required:
+        - id
+        - sheetId
+        - languageId
+        - status
+        - runtimeMsg
+        - avgMemoConsumption
+        - avgTimeConsumption
+        - submittedAt
+
     healthCheckData:
       title: Schema for Health Check Data
       type: object
@@ -213,6 +262,29 @@ components:
         - devMessage
         - success
         - data
+
+    getAllSubmissionsResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        type:
+          type: string
+          example: 'SUCCESS'
+        message:
+          type: string
+          example: 'Success'
+        devMessage:
+          type: string
+          example: 'Success'
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/getAllSubmissionsResponseData'
 
     noContentResponse:
       type: object
@@ -476,7 +548,7 @@ paths:
           description: Process by test cases type
       responses:
         '200':
-          description: OK
+          description: SUCCESS
           content:
             application/json:
               schema:
@@ -529,6 +601,115 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/unprocessableContent'
+        '500':
+          description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internalServerErrorResponse'
+
+  /submission/{sheetId}:
+    get:
+      operationId: getAllSubmissions
+      summary: Get all Submissions by Sheet ID
+      description: An API to retrieve all submissions for the requested sheet Id from the system.
+      parameters:
+        - $ref: '#/components/parameters/SheetIdParam'
+        - in: query
+          name: page
+          schema:
+            type: string
+          required: false
+          description: Filter submissions by page number
+        - in: query
+          name: limit
+          schema:
+            type: string
+          required: false
+          description: Filter submissions by page limit
+      responses:
+        '200':
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getAllSubmissionsResponse'
+        '204':
+          description: CONTENT_NOT_AVAILABLE
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/noContentResponse'
+        '400':
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequestResponse'
+        '401':
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorizedResponse'
+        '403':
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbiddenResponse'
+        '404':
+          description: NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/notFound'
+        '500':
+          description: INTERNAL_SERVER_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/internalServerErrorResponse'
+
+  /submission/{sheetId}/{submissionId}:
+    get:
+      operationId: getSubmissionDetail
+      summary: Get Submission Detail by Submission ID
+      description: An API to retrieve submission detail for the requested submission Id from the system.
+      parameters:
+        - $ref: '#/components/parameters/SheetIdParam'
+        - $ref: '#/components/parameters/SubmissionIdParam'
+      responses:
+        '200':
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getSubmitTypeByIDResponse'
+        '400':
+          description: BAD_REQUEST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/badRequestResponse'
+        '401':
+          description: UNAUTHORIZED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/unauthorizedResponse'
+        '403':
+          description: FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forbiddenResponse'
+        '404':
+          description: NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/notFound'
         '500':
           description: INTERNAL_SERVER_ERROR
           content:
