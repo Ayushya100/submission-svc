@@ -23,12 +23,18 @@ API routes are secured using bearer tokens and role-based access control. Input 
 
 ## API Endpoints
 ### Health & Utility APIs
-| Method | Endpoint                                               | Description                              |
-| :----- | :----------------------------------------------------- | :--------------------------------------- |
-| GET    | `/api-docs/`                                           | View docs for service                    |
-| GET    | `/problems-svc/api/v1.0/health`                        | Health Check Service                     |
+| Method | Endpoint                                                 | Description                              |
+| :----- | :------------------------------------------------------- | :--------------------------------------- |
+| GET    | `/api-docs/`                                             | View docs for service                    |
+| GET    | `/submission-svc/api/v1.0/health`                        | Health Check Service                     |
 
 ## 🛠️ Setup Instructions
+| Method | Endpoint                                                    | Description                              |
+| :----- | :---------------------------------------------------------- | :--------------------------------------- |
+| POST   | `/submission-svc/api/v1.0/submission`                       | Register user submissions for a sheet    |
+| GET    | `/submission-svc/api/v1.0/submission/:sheetID`              | Get user submission list for a sheet     |
+| GET    | `/submission-svc/api/v1.0/submission/:sheetID/:submissionId`| Get user submission detail               |
+| DELETE | `/submission-svc/api/v1.0/submission/clear`                 | Clear user submissions                   |
 
 ```bash
 # Clone the repository
