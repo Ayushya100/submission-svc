@@ -19,6 +19,7 @@ class SubmissionService extends Service {
     this.app.post(`${SUBMISSION_API}/submission`, routes.submissionRoutes.registerUserSubmissions);
     this.app.get(`${SUBMISSION_API}/submission/:sheetId`, routes.submissionRoutes.getSubmissions);
     this.app.get(`${SUBMISSION_API}/submission/:sheetId/:submissionId`, routes.submissionRoutes.getSubmissions);
+    this.app.delete(`${SUBMISSION_API}/submission/clear`, routes.submissionRoutes.clearSubmission);
   }
 }
 

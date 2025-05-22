@@ -3,7 +3,7 @@
 import { logger, buildApiResponse } from 'common-node-lib';
 import controllers from '../../controllers/index.js';
 
-const log = logger('Router: register-user-submission');
+const log = logger('Router: fetch-user-submissions');
 const sheetControllers = controllers.sheetControllers;
 const submissionControllers = controllers.submissionControllers;
 
