@@ -16,10 +16,10 @@ class SubmissionService extends Service {
 
   registerServiceEndpoints() {
     // Submission Endpoints
-    this.app.post(`${SUBMISSION_API}/submission`, routes.submissionRoutes.registerUserSubmissions);
-    this.app.get(`${SUBMISSION_API}/submission/:sheetId`, routes.submissionRoutes.getSubmissions);
-    this.app.get(`${SUBMISSION_API}/submission/:sheetId/:submissionId`, routes.submissionRoutes.getSubmissions);
-    this.app.delete(`${SUBMISSION_API}/submission/clear`, routes.submissionRoutes.clearSubmission);
+    this.app.post(`${SUBMISSION_API}/submission`, verifyScope('SUBMIT.U'), routes.submissionRoutes.registerUserSubmissions);
+    this.app.get(`${SUBMISSION_API}/submission/:sheetId`, verifyScope('SUBMIT.V'), routes.submissionRoutes.getSubmissions);
+    this.app.get(`${SUBMISSION_API}/submission/:sheetId/:submissionId`, verifyScope('SUBMIT.V'), routes.submissionRoutes.getSubmissions);
+    this.app.delete(`${SUBMISSION_API}/submission/clear`, verifyScope('SUBMIT.D'), routes.submissionRoutes.clearSubmission);
   }
 }
 
